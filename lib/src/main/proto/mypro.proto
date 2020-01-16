@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "com.sam.lib";
+option java_multiple_files = true;
+option java_outer_classname = "MyproRpcProto";
+
+service MyproRpcService {
+    rpc getUser (GrpcStringRequest) returns (GrpcStringResponse) {}
+}
+
+message GrpcStringRequest {
+    string str = 1;
+}
+
+message GrpcStringResponse {
+    string str = 1;
+}

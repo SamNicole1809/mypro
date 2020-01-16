@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="lib" />
+        <module name="device" />
+        <module name="person" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="device" target="1.8" />
+      <module name="lib" target="1.8" />
+      <module name="mypro" target="1.8" />
+      <module name="person" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="device" options="-parameters" />
+      <module name="lib" options="-parameters" />
+      <module name="person" options="-parameters" />
+    </option>
+  </component>
+</project>

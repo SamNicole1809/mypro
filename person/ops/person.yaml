@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: person-service-v2
+  labels:
+    app: person-service-v2
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: person-service-v2
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: person-service-v2
+    spec:
+      containers:
+        - name: person-service-v2
+          image: person-service:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          imagePullPolicy: IfNotPresent
+      # Comment the following tolerations if Dashboard must not be deployed on master  
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: person-service-v2
+  labels:
+    app: person-service-v2
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: person-service-v2
+  type: NodePort

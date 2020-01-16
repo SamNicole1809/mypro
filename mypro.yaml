@@ -1,0 +1,116 @@
+##################################################################################################
+# person service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: person
+  labels:
+    app: person
+    service: person
+spec:
+  ports:
+    - name: http
+      port: 8080
+    - name: grpc
+      port: 9898
+      protocol: TCP
+  selector:
+    app: person
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mypro-person
+  labels:
+    account: person
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: person-v1
+  labels:
+    app: person
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: person
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: person
+        version: v1
+    spec:
+      serviceAccountName: mypro-person
+      containers:
+        - name: person
+          image: person-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 9898
+              name: grpc
+              protocol: TCP
+---
+##################################################################################################
+# device service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: device
+  labels:
+    app: device
+    service: device
+spec:
+  ports:
+    - name: http
+      port: 8080
+    - name: grpc
+      port: 9898
+      protocol: TCP
+  selector:
+    app: device
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mypro-device
+  labels:
+    account: device
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-v1
+  labels:
+    app: device
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: device
+        version: v1
+    spec:
+      serviceAccountName: mypro-device
+      containers:
+        - name: device
+          image: device-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 9898
+              name: grpc
+              protocol: TCP
+---

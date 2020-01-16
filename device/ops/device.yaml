@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-service-v1
+  labels:
+    app: device-service-v1
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: device-service-v1
+  template:
+    metadata:
+      labels:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        app: device-service-v1
+    spec:
+      containers:
+        - name: device-service-v1
+          image: device-service:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          imagePullPolicy: IfNotPresent
+      # Comment the following tolerations if Dashboard must not be deployed on master  
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: device-service-v1
+  labels:
+    app: device-service-v1
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: device-service-v1
+  type: NodePort
